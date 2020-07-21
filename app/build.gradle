@@ -14,6 +14,7 @@ android {
         versionName "1.0"
 
         buildConfigField "String", "API_ENDPOINT", '"http://api.openweathermap.org/"'
+        buildConfigField "String", "HELP_ENDPOINT", '"http://openweathermap.org/"'
         buildConfigField "String", "API_KEY", '"bc0ffae33833bd4d0214451ff2c0d4be"'
     }
 

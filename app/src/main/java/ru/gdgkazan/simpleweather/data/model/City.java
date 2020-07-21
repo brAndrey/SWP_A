@@ -13,6 +13,9 @@ import java.util.List;
  */
 public class City implements Serializable {
 
+    @SerializedName("id")
+    private int mId;
+
     @SerializedName("name")
     private String mName;
 
@@ -31,6 +34,17 @@ public class City implements Serializable {
     public City(@NonNull String name) {
         mName = name;
     }
+
+
+    @NonNull
+    public int getId() {
+        return mId;
+    }
+
+    public void setID(@NonNull int id) {
+        mId = id;
+    }
+
 
     @NonNull
     public String getName() {

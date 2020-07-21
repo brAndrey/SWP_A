@@ -25,6 +25,7 @@ public class CityTable extends BaseTable<City> {
 
     public static final Table<City> TABLE = new CityTable();
 
+    public static final String CITY_ID = "city_id";
     public static final String CITY_NAME = "city_name";
     public static final String WEATHER = "weather";
     public static final String MAIN = "main";
@@ -37,13 +38,31 @@ public class CityTable extends BaseTable<City> {
                 .textColumn(WEATHER)
                 .textColumn(MAIN)
                 .textColumn(WIND)
+                .intColumn(CITY_ID)
                 .execute(database);
     }
+
+    @Override
+    public int getLastUpgradeVersion() {
+        // выставляем версию таблици базы - надо для обновления структуры таблици
+        return 2;
+
+        //https://github.com/ArturVasilov/SQLite
+
+//        @Override
+//        public void onUpgrade(@NonNull SQLiteDatabase database) {
+//            database.execSQL("DROP TABLE IF EXISTS " + getTableName());
+//            onCreate(database);
+//        }
+    }
+
+
 
     @NonNull
     @Override
     public ContentValues toValues(@NonNull City city) {
         ContentValues values = new ContentValues();
+        values.put(CITY_ID, city.getId());
         values.put(CITY_NAME, city.getName());
         values.put(WEATHER, GsonHolder.getGson().toJson(city.getWeather()));
         values.put(MAIN, GsonHolder.getGson().toJson(city.getMain()));
@@ -56,6 +75,7 @@ public class CityTable extends BaseTable<City> {
     public City fromCursor(@NonNull Cursor cursor) {
         City city = new City();
         city.setName(cursor.getString(cursor.getColumnIndex(CITY_NAME)));
+        city.setID(cursor.getInt(cursor.getColumnIndex(CITY_ID)));
 
         Weather weather = GsonHolder.getGson().fromJson(cursor.getString(cursor.getColumnIndex(WEATHER)), Weather.class);
         List<Weather> weathers = new ArrayList<>();

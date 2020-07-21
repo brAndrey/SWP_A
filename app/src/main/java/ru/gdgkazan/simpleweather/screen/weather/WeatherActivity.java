@@ -151,7 +151,9 @@ public class WeatherActivity extends AppCompatActivity implements BasicTableObse
 
         SQLite.get().registerObserver(RequestTable.TABLE, this);
         Request request = new Request(NetworkRequest.CITY_WEATHER);
-        NetworkService.start(this, request, mCityName);
+        String[] citiesNames = new String[1];
+        citiesNames[0]=mCityName;
+        NetworkService.start(this, request,citiesNames);
     }
 
     private void showWeather() {

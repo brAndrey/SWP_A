@@ -3,10 +3,12 @@ package ru.gdgkazan.simpleweather.screen.weatherlist;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -16,7 +18,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ru.gdgkazan.simpleweather.R;
+import ru.gdgkazan.simpleweather.ServisClass;
 import ru.gdgkazan.simpleweather.data.model.City;
+import ru.gdgkazan.simpleweather.network.NetworkService;
+import ru.gdgkazan.simpleweather.network.model.NetworkRequest;
+import ru.gdgkazan.simpleweather.network.model.Request;
 import ru.gdgkazan.simpleweather.screen.general.LoadingDialog;
 import ru.gdgkazan.simpleweather.screen.general.LoadingView;
 import ru.gdgkazan.simpleweather.screen.general.SimpleDividerItemDecoration;
@@ -36,6 +42,8 @@ public class WeatherListActivity extends AppCompatActivity implements CitiesAdap
     @BindView(R.id.empty)
     View mEmptyView;
 
+    private static final String LOG=WeatherListActivity.class.getName();
+
     private CitiesAdapter mAdapter;
 
     private LoadingView mLoadingView;
@@ -54,6 +62,10 @@ public class WeatherListActivity extends AppCompatActivity implements CitiesAdap
         mAdapter = new CitiesAdapter(getInitialCities(), this);
         mRecyclerView.setAdapter(mAdapter);
         mLoadingView = LoadingDialog.view(getSupportFragmentManager());
+
+        List<City> cities = getInitialCities();
+
+        loadWeather(cities);
 
         /**
          * TODO : task
@@ -82,5 +94,26 @@ public class WeatherListActivity extends AppCompatActivity implements CitiesAdap
             cities.add(new City(city));
         }
         return cities;
+    }
+
+
+    private void loadWeather ( List<City> citiesNames){
+
+        long time= System.currentTimeMillis();
+        //mLoadingView.showLoadingIndicator();
+
+        Request request = new Request(NetworkRequest.CITY_WEATHER);
+
+        //Log.i(LOG+" loadWeather ",ServisClass.ArreyToString(ServisClass.CityToMasName(citiesNames)));
+
+        NetworkService.start(this, request, ServisClass.CityToMasName(citiesNames));
+
+//        if (restart){
+//            getSupportLoaderManager().restartLoader(id, Bundle.EMPTY, callbacks);
+//        } else {
+//            getSupportLoaderManager().initLoader(id, Bundle.EMPTY, callbacks);
+//        }
+
+        Log.i(" loadWeather "," Считали за "+String.valueOf(System.currentTimeMillis()-time)+" миисекунд");
     }
 }
